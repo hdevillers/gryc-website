@@ -9,7 +9,7 @@ env:
   global:
     - DOCKER_COMPOSE="docker-compose -f docker-compose.yml -f docker-compose.ci.yml"
     - EXEC="$DOCKER_COMPOSE exec -T app"
-    - APP_DOCKER_IMAGE_NAME="mapiot/gryc"
+    - APP_DOCKER_IMAGE_NAME="hdevillers/gryc"
     - APP_DEV_DOCKER_IMAGE_TAG="dev-`find docker/dev -type f -exec md5sum {} \; | sort -k 2 | md5sum | cut -d' ' -f1`"
 
 cache:
@@ -36,11 +36,11 @@ deploy:
     skip_cleanup: true
     script: bash docker/scripts/deploy-dev
     on:
-      repo: gryc-inra/gryc-website
+      repo: hdevillers/gryc-website
       branch: master
   - provider: script
     skip_cleanup: true
     script: bash docker/scripts/deploy-prod
     on:
-      repo: gryc-inra/gryc-website
+      repo: hdevillers/gryc-website
       tags: true

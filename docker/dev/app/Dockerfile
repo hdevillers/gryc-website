@@ -52,7 +52,7 @@ RUN set -ex; \
 # Install BLAST
 RUN set -ex; \
     \
-    curl -L -m 500 -o /tmp/ncbi-blast-${BLAST_VERSION}+-x64-linux.tar.gz ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/${BLAST_VERSION}/ncbi-blast-${BLAST_VERSION}+-x64-linux.tar.gz; \
+    curl -L -o /tmp/ncbi-blast-${BLAST_VERSION}+-x64-linux.tar.gz http://gryc.inra.fr/download/${BLAST_VERSION}/ncbi-blast-${BLAST_VERSION}+-x64-linux.tar.gz; \
     tar -zxf /tmp/ncbi-blast-${BLAST_VERSION}+-x64-linux.tar.gz -C /tmp; \
     mv /tmp/ncbi-blast-${BLAST_VERSION}+/bin/* /usr/local/bin; \
     rm -R /tmp/*

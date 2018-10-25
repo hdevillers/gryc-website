@@ -107,7 +107,7 @@ assets-build: node_modules                                                      
 ## Tests
 ##---------------------------------------------------------------------------
 
-lint: lint-symfony php-cs                                                                              ## Run lint on Twig, YAML, PHP and Javascript files
+lint: lint-symfony                                                                              ## Run lint on Twig, YAML, PHP and Javascript files
 
 lint-symfony: lint-yaml lint-twig                                                                      ## Lint Symfony (Twig and YAML) files
 

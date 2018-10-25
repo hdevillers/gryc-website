@@ -146,8 +146,8 @@ up:
 	$(DOCKER_COMPOSE) up -d --remove-orphans
 
 perm:
-	$(EXEC) chmod -R 777 var files public/build node_modules vendor
-	$(EXEC) chown -R www-data:root var files public/build node_modules vendor
+	$(EXEC) chmod -R 777 files public/build node_modules vendor
+	$(EXEC) chown -R www-data:root files public/build node_modules vendor
 
 # Rules from files
 

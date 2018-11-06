@@ -1,5 +1,6 @@
 /*
  *    Copyright 2015-2018 Mathieu Piot
+ *    Copyright 2018 Hugo Devillers
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,112 +15,90 @@
  *    limitations under the License.
  */
 
-$(function() {
-    var valid = {
-        'numberChars': false,
-        'upperCase': false,
-        'lowerCase': false,
-        'number': false,
-        'passwordMatch': false
-    };
-
-    // Set submitButton
-    var submit = $( "form[name=registration] :submit, form[name=reset_password] :submit, form[name=change_password] :submit" );
+(function ($) {
+  $(document).ready(function(){
+    var submit = $( 'form[name=registration] > button[type=submit],'+
+                    ' form[name=reset_password] > button[type=submit]'
+                  );
     submit.prop('disabled', true);
 
-    // On each keyup, test
-    $("input[type=password][id*='_plainPassword_']").keyup(function(){
-        // Set regex control
-        var ucase = new RegExp("[A-Z]+");
-        var lcase = new RegExp("[a-z]+");
-        var num = new RegExp("[0-9]+");
+    // Point input password objects
+    var password1 = $( "[id$='_plainPassword_first']" );
+    var password2 = $( "[id$='_plainPassword_second']" );
 
-        // Set password fields
-        var password1 = $("[id$='_plainPassword_first']");
-        var password2 = $("[id$='_plainPassword_second']");
+    // Disable input password 2
+    password2.prop('disabled', true);
 
-        // Set display result
-        var numberChars = $("#number-chars");
-        var upperCase = $("#upper-case");
-        var lowerCase = $("#lower-case");
-        var number = $("#number");
-        var passwordMatch = $("#password-match");
+    /* Control password1:
+      - If validated, then enable password2 field,
+      - else, empty and disable password2
+    */
+    password1.keyup( function() {
+      var valid = true;
+      var rules = Array(
+        'number-chars', 'upper-case',
+        'lower-case', 'number'
+      );
+      var regex = Array(
+        new RegExp("^.{8,}$"), new RegExp("[A-Z]+"),
+        new RegExp("[a-z]+"), new RegExp("[0-9]+")
+      );
 
-        // Do the test
-        if(password1.val().length >= 8){
-            numberChars.removeClass("fa-times");
-            numberChars.addClass("fa-check");
-            numberChars.css("color","#00A41E");
-            valid['numberChars'] = true;
-        }else{
-            numberChars.removeClass("fa-check");
-            numberChars.addClass("fa-times");
-            numberChars.css("color","#FF0004");
-            valid['numberChars'] = false;
+      for(var i=0; i<rules.length; i++) {
+        // Capture the object
+        var elem = $('#'+rules[i]);
+        if(regex[i].test(password1.val())) {
+          elem.removeClass('fa-times');
+          elem.addClass('fa-check');
+          elem.css('color', '#00A41E');
+        } else {
+          elem.removeClass('fa-check');
+          elem.addClass('fa-times');
+          elem.css('color', '#FF0004');
+          valid = false;
         }
+      }
 
-        if(ucase.test(password1.val())){
-            upperCase.removeClass("fa-times");
-            upperCase.addClass("fa-check");
-            upperCase.css("color","#00A41E");
-            valid['upperCase'] = true;
-        }else{
-            upperCase.removeClass("fa-check");
-            upperCase.addClass("fa-times");
-            upperCase.css("color","#FF0004");
-            valid['upperCase'] = false;
-        }
+      // Editing password1 alway empty password2
+      if(password1.val() !== password2.val()) {
+        password2.val('');
+        var elem = $('#password-match');
+        elem.removeClass('fa-check');
+        elem.addClass('fa-times');
+        elem.css('color', '#FF0004');
+        // As well as submit button
+        submit.prop('disabled', true);
+      }
 
-        if(lcase.test(password1.val())){
-            lowerCase.removeClass("fa-times");
-            lowerCase.addClass("fa-check");
-            lowerCase.css("color","#00A41E");
-            valid['lowerCase'] = true;
-        }else{
-            lowerCase.removeClass("fa-check");
-            lowerCase.addClass("fa-times");
-            lowerCase.css("color","#FF0004");
-            valid['lowerCase'] = false;
-        }
-
-        if(num.test(password1.val())){
-            number.removeClass("fa-times");
-            number.addClass("fa-check");
-            number.css("color","#00A41E");
-            valid['number'] = true;
-        }else{
-            number.removeClass("fa-check");
-            number.addClass("fa-times");
-            number.css("color","#FF0004");
-            valid['number'] = false;
-        }
-
-        if(password1.val() === password2.val() && password1.val() !== ''){
-            passwordMatch.removeClass("fa-times");
-            passwordMatch.addClass("fa-check");
-            passwordMatch.css("color","#00A41E");
-            valid['passwordMatch'] = true;
-        }else{
-            passwordMatch.removeClass("fa-check");
-            passwordMatch.addClass("fa-times");
-            passwordMatch.css("color","#FF0004");
-            valid['passwordMatch'] = false;
-        }
-
-        // Test if all tests are valid or not
-        var allValid = true;
-        $.each(valid, function(index, value) {
-           if (false === value) {
-               allValid = false;
-               return false;
-           }
-        });
-
-        // If all tests are valid, enable the button
-        if (allValid && submit.prop('disabled')) {
-            submit.prop('disabled', false);
-        } else { // Else disable it
-            submit.prop('disabled', true);
-        }
+      if(valid) {
+        // Enable password2
+        password2.prop('disabled', false);
+      } else {
+        // Disable password2
+        password2.prop('disabled', true);
+        submit.prop('disabled', true);
+      }
     });
-});
+
+    /* Control password2
+    - If validated, enable submit button
+    - else, enable it.
+    */
+    password2.keyup( function() {
+      var elem = $('#password-match');
+      if(password1.val() === password2.val() && password1.val() !== '') {
+        elem.removeClass('fa-times');
+        elem.addClass('fa-check');
+        elem.css('color', '#00A41E');
+        // Enable submit button
+        submit.prop('disabled', false);
+      } else {
+        elem.removeClass('fa-check');
+        elem.addClass('fa-times');
+        elem.css('color', '#FF0004');
+        // Disable submit button
+        submit.prop('disabled', true);
+      }
+    });
+  });
+})(jQuery);

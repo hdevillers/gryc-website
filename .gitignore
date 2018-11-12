@@ -38,6 +38,8 @@ yarn-error.log
 !/files/temp
 /files/temp/*
 !/files/temp/.gitkeep
+/strain_data/*
+!/strain_data/.gitkeep
 /web/sitemap*
 ###< app ###
 

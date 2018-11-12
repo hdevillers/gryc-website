@@ -22,6 +22,7 @@ services:
             - backend
         volumes:
             - .:/app
+            - ./strain_data:/app/strain_data
 
     db:
         image: mysql:5.7.21
@@ -78,6 +79,8 @@ services:
 
     redis:
         image: redis:4.0.8
+        sysctls:
+          net.core.somaxconn: 1024
         volumes:
             - redis_data:/data
         networks:

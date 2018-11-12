@@ -4,7 +4,7 @@ services:
     app:
         image: ${APP_DOCKER_IMAGE_NAME}:${APP_DEV_DOCKER_IMAGE_TAG}
         environment:
-            - SYMFONY_ENV=test
+            - APP_ENV=test
         build:
             cache_from:
                 - ${APP_DOCKER_IMAGE_NAME}:${APP_DEV_DOCKER_IMAGE_TAG}
